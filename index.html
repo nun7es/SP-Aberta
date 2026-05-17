@@ -582,97 +582,126 @@
 
         /* ─── MOBILE BOTTOM SHEET ─── */
         @media (max-width: 600px) {
-            body { overflow: hidden; }
+            body { overflow: hidden; touch-action: none; }
 
-            #ui-container {
-                /* reset desktop positioning */
-                top: auto;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                width: 100%;
-                border-radius: 20px 20px 0 0;
-                border-bottom: none;
-                /* start at peek height */
-                height: calc(100vh - 56px);
-                transform: translateY(calc(100% - 140px));
-                transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
-                z-index: 20;
-                will-change: transform;
-            }
+            /* Mapa ocupa tela toda */
+            #map { position: fixed; inset: 0; z-index: 1; }
 
-            #ui-container.sheet-open {
-                transform: translateY(0);
-            }
-
-            #ui-container.sheet-mid {
-                transform: translateY(calc(100% - 52vh));
-            }
-
-            /* drag handle */
-            .sheet-handle {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 10px 0 4px;
-                cursor: grab;
-                touch-action: none;
-                flex-shrink: 0;
-            }
-            .sheet-handle-bar {
-                width: 36px;
-                height: 4px;
-                background: var(--border);
-                border-radius: 99px;
-            }
-
-            /* Map gets full screen */
-            #map { z-index: 1; }
-
-            /* GPS button floats on map */
+            /* Controles flutuantes no mapa */
             #mobile-map-controls {
-                display: flex;
+                display: flex !important;
                 position: fixed;
-                top: 12px;
-                right: 12px;
-                z-index: 15;
+                top: 14px;
+                right: 14px;
+                z-index: 30;
                 flex-direction: column;
                 gap: 8px;
             }
 
-            /* close route btn repositioned */
+            /* Botão GPS flutuante */
+            #mobile-gps-btn {
+                width: 46px; height: 46px;
+                border-radius: 14px;
+                background: var(--bg-panel-glass);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid var(--border);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; color: var(--text-secondary);
+                transition: all 0.2s;
+            }
+            #mobile-gps-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+            /* Botão tema flutuante */
+            #mobile-theme-btn {
+                width: 46px; height: 46px;
+                border-radius: 14px;
+                background: var(--bg-panel-glass);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid var(--border);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+                display: flex; align-items: center; justify-content: center;
+                cursor: pointer; color: var(--text-secondary);
+            }
+
+            /* Botão encerrar rota reposicionado */
             #close-route-btn {
-                top: auto;
-                bottom: 160px;
-                left: 50%;
-                transform: translateX(-50%);
+                top: auto !important;
+                left: 50% !important;
+                bottom: 200px !important;
+                transform: translateX(-50%) !important;
+                width: auto;
             }
 
-            /* Directions panel repositioned */
+            /* Painel de direções reposicionado */
             .mapboxgl-ctrl-directions {
-                top: 64px !important;
-                right: 12px !important;
-                max-width: calc(100vw - 24px) !important;
+                top: 14px !important;
+                left: 14px !important;
+                right: 70px !important;
+                max-width: none !important;
             }
 
-            /* Compact header on mobile */
-            .header {
-                padding: 12px 16px 10px;
+            /* ── BOTTOM SHEET ── */
+            #ui-container {
+                position: fixed;
+                left: 0; right: 0; bottom: 0;
+                top: auto;
+                width: 100%;
+                height: 85vh;                          /* altura máxima */
+                border-radius: 20px 20px 0 0;
+                border-bottom: none;
+                z-index: 20;
+                /* posição inicial: só handle + header visíveis (~110px) */
+                transform: translateY(calc(100% - 110px));
+                transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+                will-change: transform;
+                overflow: hidden;
             }
+
+            /* Estados do sheet */
+            #ui-container.sheet-mid  { transform: translateY(calc(100% - 50vh)); }
+            #ui-container.sheet-full { transform: translateY(0); }
+
+            /* Handle visível */
+            .sheet-handle {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                padding: 10px 0 6px;
+                cursor: grab;
+                flex-shrink: 0;
+                /* área de toque maior */
+                min-height: 28px;
+            }
+            .sheet-handle-bar {
+                width: 36px; height: 4px;
+                background: var(--border);
+                border-radius: 99px;
+                pointer-events: none;
+            }
+
+            /* Header compacto */
+            .header { padding: 10px 14px 10px; }
             .brand-text span { display: none; }
+            .btn-gps { display: none; }       /* sumido — GPS está no float */
 
-            /* GPS button inside header hidden on mobile (moved to floating) */
-            .btn-gps { display: none; }
+            /* Tabs compactos */
+            .tab-btn { font-size: 12px; padding: 7px 2px; }
 
-            /* Tabs slightly more compact */
-            .tab-btn { font-size: 12px; padding: 7px 4px; }
+            /* Cards com toque mais fácil */
+            .place-card { padding: 13px 12px; }
+            .route-btn  { height: 42px; font-size: 14px; }
 
-            /* Touch-friendly cards */
-            .place-card { padding: 14px 14px; }
-            .route-btn { height: 40px; font-size: 14px; }
+            /* Legenda reposicionada acima do sheet */
+            #map-legend { bottom: 120px; right: 12px; }
+
+            /* Ocultar btn GPS do header no mobile */
+            .header .btn-gps { display: none !important; }
         }
 
-        /* Desktop: hide mobile-only elements */
+        /* Desktop: ocultar elementos só-mobile */
         #mobile-map-controls { display: none; }
         .sheet-handle { display: none; }
 
@@ -815,13 +844,17 @@
 
 <div id="map"></div>
 
-<!-- Mobile floating controls -->
+<!-- Controles flutuantes mobile -->
 <div id="mobile-map-controls">
-    <button onclick="alternarTema()" title="Alternar tema" style="width:40px;height:40px;border-radius:12px;background:var(--bg-panel-glass);backdrop-filter:blur(12px);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.12);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <button id="mobile-gps-btn" onclick="obterLocalizacaoReal()" title="Minha localização">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/>
+        </svg>
     </button>
-    <button id="gps-btn-mobile" onclick="obterLocalizacaoReal()" style="width:40px;height:40px;border-radius:12px;background:var(--bg-panel-glass);backdrop-filter:blur(12px);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.12);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>
+    <button id="mobile-theme-btn" onclick="alternarTema()" title="Alternar tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
     </button>
 </div>
 
@@ -1456,18 +1489,23 @@
     // ─── GPS ───
     function obterLocalizacaoReal() {
         const btn = document.getElementById('gps-btn');
+        const btnMobile = document.getElementById('mobile-gps-btn');
         if (!navigator.geolocation) return;
-        btn.textContent = 'Buscando...';
+        if (btn) btn.textContent = 'Buscando...';
+        if (btnMobile) btnMobile.style.opacity = '0.6';
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 localizacaoUsuario = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                btn.innerHTML = `
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                        <circle cx="12" cy="12" r="5"/>
-                    </svg>
-                    GPS Ativo`;
-                btn.classList.add('active');
+
+                const gpsIconAtivo = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="12" r="5"/></svg>`;
+                if (btn) { btn.innerHTML = gpsIconAtivo + ' GPS Ativo'; btn.classList.add('active'); }
+                if (btnMobile) {
+                    btnMobile.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="12" r="5"/></svg>`;
+                    btnMobile.classList.add('active');
+                    btnMobile.style.opacity = '1';
+                }
+
                 map.flyTo({ center: [localizacaoUsuario.lng, localizacaoUsuario.lat], zoom: 14 });
 
                 if (marcadorUsuario) marcadorUsuario.remove();
@@ -1479,8 +1517,8 @@
                 filtrarTudo();
             },
             () => {
-                btn.textContent = 'Erro no GPS';
-                btn.classList.remove('active');
+                if (btn) { btn.textContent = 'Erro no GPS'; btn.classList.remove('active'); }
+                if (btnMobile) { btnMobile.style.opacity = '1'; btnMobile.classList.remove('active'); }
             }
         );
     }
@@ -1701,119 +1739,125 @@
 
     // ─── MOBILE BOTTOM SHEET ───
     (function initBottomSheet() {
-        const sheet = document.getElementById('ui-container');
-        const handle = document.getElementById('sheet-handle');
+        const sheet   = document.getElementById('ui-container');
+        const handle  = document.getElementById('sheet-handle');
+        const list    = document.getElementById('lista-locais');
         if (!handle) return;
 
-        let isMobile = () => window.innerWidth <= 600;
-        let startY = 0, startTranslate = 0, currentTranslate = 0, dragging = false;
+        const isMobile = () => window.innerWidth <= 600;
 
-        function getTranslateY() {
-            const st = window.getComputedStyle(sheet);
-            const mat = new DOMMatrix(st.transform);
-            return mat.m42;
-        }
+        // Estados: 'peek' | 'mid' | 'full'
+        let estado = 'peek';
 
-        function snapSheet(velocityY) {
-            const sheetH = sheet.offsetHeight;
-            const peekOffset = sheetH - 140;
-            const midOffset  = sheetH - (window.innerHeight * 0.52);
+        function setEstado(novoEstado, animado = true) {
+            estado = novoEstado;
+            if (!animado) sheet.style.transition = 'none';
+            else sheet.style.transition = '';
 
-            // decide snap based on velocity or position
-            if (velocityY > 600 || currentTranslate > sheetH * 0.7) {
-                // snap to peek
-                sheet.classList.remove('sheet-open', 'sheet-mid');
-            } else if (velocityY < -400 || currentTranslate < sheetH * 0.25) {
-                // snap to full open
-                sheet.classList.add('sheet-open');
-                sheet.classList.remove('sheet-mid');
-            } else {
-                // snap to mid
-                sheet.classList.add('sheet-mid');
-                sheet.classList.remove('sheet-open');
-            }
+            sheet.classList.remove('sheet-mid', 'sheet-full');
+            if (novoEstado === 'mid')  sheet.classList.add('sheet-mid');
+            if (novoEstado === 'full') sheet.classList.add('sheet-full');
+
             sheet.style.transform = '';
-            sheet.style.transition = '';
+            // reativar scroll da lista só quando aberto
+            if (list) list.style.overflowY = (novoEstado === 'full' || novoEstado === 'mid') ? 'auto' : 'hidden';
         }
 
-        function onPointerDown(e) {
+        // ── Drag ──
+        let dragStartY = 0, dragStartTransform = 0, isDragging = false, lastVelY = 0, lastVelT = 0;
+
+        function getCurrentTranslateY() {
+            const m = new DOMMatrix(getComputedStyle(sheet).transform);
+            return m.m42;
+        }
+
+        function onDragStart(e) {
             if (!isMobile()) return;
-            dragging = true;
-            startY = e.touches ? e.touches[0].clientY : e.clientY;
-            startTranslate = getTranslateY();
+            isDragging = true;
+            dragStartY = e.touches ? e.touches[0].clientY : e.clientY;
+            dragStartTransform = getCurrentTranslateY();
             sheet.style.transition = 'none';
+            lastVelY = dragStartY; lastVelT = Date.now();
         }
 
-        function onPointerMove(e) {
-            if (!dragging || !isMobile()) return;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            const dy = clientY - startY;
-            currentTranslate = Math.max(0, startTranslate + dy);
-            sheet.style.transform = `translateY(${currentTranslate}px)`;
+        function onDragMove(e) {
+            if (!isDragging || !isMobile()) return;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            const dy = y - dragStartY;
+            const next = Math.max(0, dragStartTransform + dy);
+            sheet.style.transform = `translateY(${next}px)`;
+            lastVelY = y; lastVelT = Date.now();
         }
 
-        let lastY = 0, lastT = 0;
-        function onPointerUp(e) {
-            if (!dragging) return;
-            dragging = false;
-            const now = Date.now();
-            const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
-            const velocity = (clientY - lastY) / Math.max(1, now - lastT) * 1000;
-            snapSheet(velocity);
+        function onDragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            sheet.style.transition = '';
+
+            const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+            const elapsed = Math.max(1, Date.now() - lastVelT);
+            const vel = (y - lastVelY) / elapsed * 1000; // px/s positivo = descendo
+
+            const cur = getCurrentTranslateY();
+            const sheetH = sheet.offsetHeight;
+
+            // Decidir snap por velocidade ou posição
+            if (vel > 500 || cur > sheetH * 0.65) {
+                // Deslizou para baixo rápido → peek
+                setEstado('peek');
+            } else if (vel < -400 || cur < sheetH * 0.2) {
+                // Deslizou para cima rápido → full
+                setEstado('full');
+            } else {
+                // Meio-termo → mid
+                setEstado('mid');
+            }
         }
 
-        function trackVelocity(e) {
-            lastY = e.touches ? e.touches[0].clientY : e.clientY;
-            lastT = Date.now();
-        }
+        // Eventos touch e mouse no handle
+        handle.addEventListener('touchstart',  onDragStart, { passive: true });
+        handle.addEventListener('touchmove',   onDragMove,  { passive: true });
+        handle.addEventListener('touchend',    onDragEnd);
+        handle.addEventListener('mousedown',   onDragStart);
+        window.addEventListener('mousemove',   onDragMove);
+        window.addEventListener('mouseup',     onDragEnd);
 
-        handle.addEventListener('touchstart', onPointerDown, { passive: true });
-        handle.addEventListener('touchmove', (e) => { trackVelocity(e); onPointerMove(e); }, { passive: true });
-        handle.addEventListener('touchend', onPointerUp);
-        handle.addEventListener('mousedown', onPointerDown);
-        window.addEventListener('mousemove', (e) => { trackVelocity(e); onPointerMove(e); });
-        window.addEventListener('mouseup', onPointerUp);
-
-        // tap on handle → cycle states
+        // Toque no handle → cicla estados
         handle.addEventListener('click', () => {
             if (!isMobile()) return;
-            if (sheet.classList.contains('sheet-open')) {
-                sheet.classList.remove('sheet-open');
-                sheet.classList.add('sheet-mid');
-            } else if (sheet.classList.contains('sheet-mid')) {
-                sheet.classList.remove('sheet-mid');
-            } else {
-                sheet.classList.add('sheet-mid');
-            }
+            if (estado === 'peek') setEstado('mid');
+            else if (estado === 'mid') setEstado('full');
+            else setEstado('peek');
         });
 
-        // clicking the map closes sheet to peek
-        document.getElementById('map').addEventListener('click', () => {
+        // Toque no mapa → fecha para peek
+        document.getElementById('map').addEventListener('click', (e) => {
             if (!isMobile()) return;
-            sheet.classList.remove('sheet-open', 'sheet-mid');
+            // só fecha se não foi clique num ponto do mapa (Mapbox para propagação)
+            setEstado('peek');
         });
 
-        // sync mobile GPS button state
-        const origObter = window.obterLocalizacaoReal;
-        window.obterLocalizacaoReal = function() {
-            origObter();
-            // open sheet mid after getting GPS so user sees results
-            setTimeout(() => {
-                if (isMobile()) {
-                    sheet.classList.add('sheet-mid');
-                    sheet.classList.remove('sheet-open');
-                }
-            }, 800);
+        // Quando GPS ativa → abrir para mid
+        const _origObter = window.obterLocalizacaoReal;
+        window.obterLocalizacaoReal = function () {
+            _origObter.call(this);
+            const mobileGpsBtn = document.getElementById('mobile-gps-btn');
+            if (mobileGpsBtn) {
+                mobileGpsBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="12" r="5"/></svg>`;
+                mobileGpsBtn.classList.add('active');
+            }
+            setTimeout(() => { if (isMobile()) setEstado('mid'); }, 900);
         };
 
-        // when results load on mobile → open to mid
-        const origFiltrar = window.filtrarTudo;
-        window.filtrarTudo = function() {
-            origFiltrar();
-            if (isMobile() && !sheet.classList.contains('sheet-open') && !sheet.classList.contains('sheet-mid')) {
-                sheet.classList.add('sheet-mid');
-            }
+        // Quando lista atualiza → abrir para mid se estava em peek
+        const _origFiltrar = window.filtrarTudo;
+        window.filtrarTudo = function () {
+            _origFiltrar.call(this);
+            if (isMobile() && estado === 'peek') setEstado('mid');
         };
+
+        // Estado inicial
+        setEstado('peek', false);
     })();
 </script>
 </body>
